@@ -12,114 +12,135 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("⚖️ LegalX AI Knowledge Centre")
-st.markdown("AI-Powered Legal Information Assistant")
+# --------------------------
+# Load Topic Files
+# --------------------------
 
-# -------------------------
-# Load legal files
-# -------------------------
-
-DATA_FOLDER = "data"
-
-topic_files = {
-    "POCSO Act": "pocso.txt",
-    "RTI Act": "rti.txt",
-    "Cyber Crime Laws": "cybercrime.txt",
-    "Consumer Protection Act": "consumer_protection.txt",
-    "GST Registration": "gst_registration.txt"
+TOPICS = {
+    "POCSO Act": "data/pocso.txt",
+    "RTI Act": "data/rti.txt",
+    "Cyber Crime Laws": "data/cybercrime.txt",
+    "Consumer Protection Act": "data/consumer_protection.txt",
+    "GST Registration": "data/gst_registration.txt"
 }
 
 
-def load_content(filename):
-    path = os.path.join(DATA_FOLDER, filename)
-
-    if not os.path.exists(path):
-        return "File not found."
-
-    with open(path, "r", encoding="utf-8") as file:
-        return file.read()
+def load_content(filepath):
+    try:
+        with open(filepath, "r", encoding="utf-8") as file:
+            return file.read()
+    except Exception as e:
+        return f"Error loading file: {e}"
 
 
-# -------------------------
+# --------------------------
+# UI
+# --------------------------
+
+st.title("⚖️ LegalX AI Knowledge Centre")
+st.markdown(
+    "AI-powered legal knowledge platform for simplified legal information."
+)
+
 # Sidebar
-# -------------------------
 
 st.sidebar.title("Legal Topics")
 
 selected_topic = st.sidebar.selectbox(
     "Choose a topic",
-    list(topic_files.keys())
+    list(TOPICS.keys())
 )
 
-content = load_content(topic_files[selected_topic])
+content = load_content(TOPICS[selected_topic])
 
-# -------------------------
-# Topic Section
-# -------------------------
+# --------------------------
+# Topic Content
+# --------------------------
 
 st.header(selected_topic)
 
-st.subheader("Source Content")
-
-with st.expander("View Legal Content"):
+with st.expander("📄 View Source Content"):
     st.write(content)
 
-# -------------------------
+# --------------------------
 # Summary
-# -------------------------
+# --------------------------
 
-if st.button("Generate Summary"):
+col1, col2 = st.columns(2)
 
-    with st.spinner("Generating summary..."):
+with col1:
 
-        summary = generate_summary(content)
+    if st.button("Generate Summary"):
 
-        st.session_state["summary"] = summary
+        try:
 
-    st.subheader("📄 Summary")
-    st.write(summary)
+            with st.spinner("Generating summary..."):
 
-# Show saved summary
+                summary = generate_summary(content)
+
+                st.session_state["summary"] = summary
+
+        except Exception as e:
+
+            st.error(f"Summary Error: {e}")
+
+# Display Summary
 
 if "summary" in st.session_state:
 
-    st.subheader("📄 Summary")
+    st.subheader("📋 Summary")
+
     st.write(st.session_state["summary"])
 
-# -------------------------
+# --------------------------
 # Key Information
-# -------------------------
+# --------------------------
 
-if st.button("Extract Key Information"):
+with col2:
 
-    with st.spinner("Extracting key information..."):
+    if st.button("Extract Key Information"):
 
-        info = extract_key_info(content)
+        try:
 
-        st.session_state["info"] = info
+            with st.spinner("Extracting information..."):
+
+                info = extract_key_info(content)
+
+                st.session_state["info"] = info
+
+        except Exception as e:
+
+            st.error(f"Extraction Error: {e}")
 
 if "info" in st.session_state:
 
     st.subheader("🔍 Key Information")
+
     st.write(st.session_state["info"])
 
-# -------------------------
-# Audio Summary
-# -------------------------
+# --------------------------
+# Audio
+# --------------------------
 
 if "summary" in st.session_state:
 
     st.subheader("🔊 Audio Summary")
 
-    audio_file = generate_audio(
-        st.session_state["summary"]
-    )
+    try:
 
-    st.audio(audio_file)
+        audio_file = generate_audio(
+            st.session_state["summary"]
+        )
 
-# -------------------------
+        st.audio(audio_file)
+
+    except Exception as e:
+
+        st.error(f"Audio Error: {e}")
+
+# --------------------------
 # AI Legal Assistant
-# -------------------------
+# --------------------------
 
 st.subheader("🤖 AI Legal Assistant")
 
@@ -130,23 +151,32 @@ question = st.text_input(
 if st.button("Ask Question"):
 
     if question.strip() == "":
+
         st.warning("Please enter a question.")
+
     else:
 
-        with st.spinner("Thinking..."):
+        try:
 
-            answer = answer_question(
-                content,
-                question
-            )
+            with st.spinner("Thinking..."):
 
-        st.success(answer)
+                answer = answer_question(
+                    content,
+                    question
+                )
 
-# -------------------------
+            st.success(answer)
+
+        except Exception as e:
+
+            st.error(f"Chatbot Error: {e}")
+
+# --------------------------
 # Footer
-# -------------------------
+# --------------------------
 
 st.markdown("---")
+
 st.caption(
     "Built for LegalX AI/ML Internship Assessment"
 )

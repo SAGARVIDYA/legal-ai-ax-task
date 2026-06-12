@@ -9,10 +9,14 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 def answer_question(context, question):
+
     prompt = f"""
     You are a legal assistant.
 
-    Use ONLY the information below to answer the question.
+    Answer the user's question based on the legal content below.
+
+    If the answer exists in the content,
+    provide a clear and simple explanation.
 
     Legal Content:
     {context}
@@ -20,8 +24,9 @@ def answer_question(context, question):
     Question:
     {question}
 
-    Answer in simple English.
+    Give the answer in simple English.
     """
 
     response = model.generate_content(prompt)
+
     return response.text
