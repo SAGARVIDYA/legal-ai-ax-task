@@ -1,0 +1,17 @@
+[33mcommit 99fff0845dd80328f8c5ba0f26331f621af8c264[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Vidya Sagar.S <vsagar71004@gmail.com>
+Date:   Fri Jun 12 13:51:10 2026 +0530
+
+    Remove secrets and generated files
+
+ .env | 1 [31m-[m
+ 1 file changed, 1 deletion(-)
+
+[33mcommit 4326705aa9d5b98c06951c6f6450acb3142182fd[m
+Author: Vidya Sagar.S <vsagar71004@gmail.com>
+Date:   Fri Jun 12 13:49:19 2026 +0530
+
+    Initial LegalX AI Knowledge Centre
+
+ .env | 1 [32m+[m
+ 1 file changed, 1 insertion(+)
